@@ -11,7 +11,7 @@ from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
-from .denoise import DenoiseConfig, denoise_audio
+from denoise import DenoiseConfig, denoise_audio
 
 
 app = FastAPI(title="Noise Remover API", version="1.0")
