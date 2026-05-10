@@ -104,4 +104,3 @@ This project can be deployed as separate services on Render.com: one for the bac
 - **API Calls**: Update frontend to use the backend service URL for API requests.
 - **Free Tier**: Both services can use Render's free tier, but monitor usage limits.
 - **Custom Domain**: You can add custom domains to both services separately.
-
