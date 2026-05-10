@@ -8,10 +8,16 @@ Install:
 python -m pip install -r backend/requirements.txt
 ```
 
-Run:
+Run from the repository root:
 
 ```bash
 python -m uvicorn backend.app:app --reload --port 8000
+```
+
+If you are inside the `backend/` directory instead, use:
+
+```bash
+uvicorn app:app --reload --port 8000
 ```
 
 Health check: `http://127.0.0.1:8000/api/health`
