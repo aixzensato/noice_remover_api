@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import os
 import tempfile
+import traceback
 from typing import Optional
 
 import numpy as np
@@ -70,36 +71,40 @@ async def denoise_endpoint(
     except Exception as e:
         return JSONResponse({"error": f"Unsupported audio or decode failed: {e}"}, status_code=400)
 
-    x = np.asarray(x, dtype=np.float32)
-    cfg = DenoiseConfig(
-        strength=strength,
-        residual_gate=residual_gate,
-        hf_boost_db=hf_boost_db,
-        noise_percentile=noise_percentile,
-    )
-    y = denoise_audio(x, int(sr), cfg)
-
-    # write to temp file and return (FastAPI FileResponse streams it)
-    suffix = ".wav" if out_format == "wav" else ".flac"
-    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
-    tmp_path = tmp.name
-    tmp.close()
     try:
-        sf.write(tmp_path, y, int(sr))
-    except Exception:
-        try:
-            os.unlink(tmp_path)
-        except Exception:
-            pass
-        raise
+        x = np.asarray(x, dtype=np.float32)
+        cfg = DenoiseConfig(
+            strength=strength,
+            residual_gate=residual_gate,
+            hf_boost_db=hf_boost_db,
+            noise_percentile=noise_percentile,
+        )
+        y = denoise_audio(x, int(sr), cfg)
 
-    filename = os.path.splitext(file.filename or "audio")[0] + f"_denoised{suffix}"
-    return FileResponse(
-        tmp_path,
-        media_type="audio/wav" if out_format == "wav" else "audio/flac",
-        filename=filename,
-        background=None,
-    )
+        # write to temp file and return (FastAPI FileResponse streams it)
+        suffix = ".wav" if out_format == "wav" else ".flac"
+        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+        tmp_path = tmp.name
+        tmp.close()
+        try:
+            sf.write(tmp_path, y, int(sr))
+        except Exception:
+            try:
+                os.unlink(tmp_path)
+            except Exception:
+                pass
+            raise
+
+        filename = os.path.splitext(file.filename or "audio")[0] + f"_denoised{suffix}"
+        return FileResponse(
+            tmp_path,
+            media_type="audio/wav" if out_format == "wav" else "audio/flac",
+            filename=filename,
+            background=None,
+        )
+    except Exception as e:
+        traceback.print_exc()
+        return JSONResponse({"error": f"Processing failed: {e}"}, status_code=500)
 
 
 @app.post("/api/analyze")
