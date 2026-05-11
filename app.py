@@ -126,7 +126,7 @@ async def analyze_endpoint(file: UploadFile = File(...)):
     n_fft = 2048 if sr >= 32000 else 1024
     hop = n_fft // 4
     # short STFT
-    from .denoise import stft  # local import to avoid clutter
+    from denoise import stft  # local import to avoid clutter
 
     X, _ = stft(x_m[: min(x_m.shape[0], sr * 10)], n_fft=n_fft, hop=hop)  # first 10s max
     mag = np.abs(X).astype(np.float32)

@@ -2,14 +2,14 @@
 Backend entrypoint.
 
 Run:
-  pip install -r backend/requirements.txt
-  uvicorn backend.app:app --reload --port 8000
+  pip install -r requirements.txt
+  uvicorn app:app --reload --port 8000
 
 Or:
-  uvicorn backend.index:app --reload --port 8000
+  uvicorn index:app --reload --port 8000
 """
 
-from backend.app import app  # re-export for uvicorn
+from app import app  # re-export for uvicorn
 
 """
 Simple Denoiser (No ML)
