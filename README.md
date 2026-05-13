@@ -7,41 +7,24 @@ sdk: docker
 pinned: false
 ---
 
-# Noise Remover (React + Python)
+# Noise Remover API
 
 ## Backend (Python)
 
 Install:
 
 ```bash
-python -m pip install -r backend/requirements.txt
+pip install -r requirements.txt
 ```
 
 Run:
 
 ```bash
-python -m uvicorn app:app --reload --port 8000
+python app.py
 ```
 
 Health check: `http://127.0.0.1:8000/api/health`
 
-## Frontend (React + TS + Tailwind)
-
-Install:
-
-```bash
-cd frontend
-npm install
-```
-
-Run:
-
-```bash
-cd frontend
-npm run dev
-```
-
-Open the URL Vite prints (usually `http://127.0.0.1:5173`).
 
 ## Advanced settings (what they do)
 
@@ -77,24 +60,6 @@ The backend is deployed on Hugging Face Spaces for better performance (2 vCPU, 1
 
 > **Note**: Free Spaces may pause after 48 hours of inactivity. They wake up automatically on the next request (cold start takes ~30 seconds).
 
-### Frontend Deployment
-
-The frontend can remain on Render.com as a static site.
-
-1. **Create Frontend Service:**
-   - Go to [Render.com](https://render.com) and sign in
-   - Click "New" → "Static Site"
-   - Connect your repository
-   - Set the **Root Directory** to `frontend/`
-   - **Build Command**: `npm run build`
-   - **Publish Directory**: `dist`
-
-2. **Environment Variables:**
-   - Add `VITE_API_URL=https://YOUR-HF-USERNAME-noise-remover-api.hf.space` to connect frontend to backend
-
-3. **Deploy:**
-   - Frontend will be available at `https://your-frontend-service.onrender.com`
-
 ## Deployment on Render.com (Alternative — not recommended for large files)
 
 > ⚠️ Render free tier only provides 0.1 CPU and 512MB RAM. Audio files above ~10MB may fail or timeout. Use Hugging Face Spaces for the backend instead.
@@ -117,24 +82,9 @@ The frontend can remain on Render.com as a static site.
    - Backend will be available at `https://your-backend-service.onrender.com`
    - Health check: `https://your-backend-service.onrender.com/api/health`
 
-### Frontend Deployment
-
-1. **Create Frontend Service:**
-   - Click "New" → "Static Site"
-   - Connect your repository
-   - Set the **Root Directory** to `frontend/`
-   - **Build Command**: `npm run build`
-   - **Publish Directory**: `dist`
-
-2. **Environment Variables:**
-   - Add `VITE_API_URL=https://your-backend-service.onrender.com`
-
-3. **Deploy:**
-   - Frontend will be available at `https://your-frontend-service.onrender.com`
-
 ## Configuration Notes
 
-- **CORS**: The backend allows all origins (`*`) for development. For production, restrict to your frontend URL.
-- **API Calls**: Update frontend to use the backend service URL for API requests.
+- **CORS**: The backend allows all origins (`*`) for development. For production, restrict to your allowed origins.
+- **API Calls**: Use the backend service URL for API requests.
 - **File size limit**: Supports up to 50MB audio files when hosted on Hugging Face Spaces.
-- **Custom Domain**: You can add custom domains to both services separately.
+- **Custom Domain**: You can add a custom domain to the backend service.
